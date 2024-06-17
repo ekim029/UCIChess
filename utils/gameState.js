@@ -13,7 +13,6 @@ const updateGameState = async (id, fen, newMove, isComputerMove = false) => {
 
         await redisClient.set(`${id}:moves`, JSON.stringify(moves));
         await redisClient.set(`${id}:fen`, fen);
-        console.log("Game updated")
 
     } catch (err) {
         console.log(err);

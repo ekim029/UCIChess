@@ -1,29 +1,46 @@
-const {updateGameState} = require('../utils/gameState');
+const {updateGameState, getGameState} = require('../utils/gameState');
 const {handleUserMove, handleComputerMove} = require('./moveController');
 const chess = require('chess.js');
 
 const createNewGame = async () => {
-     const chessInstance = chess.Chess();
-     const initialFen = chessInstance.fen();
-     const instanceId = Date.now();
-
-     await updateGameState(instanceId, initialFen, null);
-     console.log("New game created");
-     return {initialFen, instanceId, chessInstance};
+     try {
+          const chessInstance = new chess.Chess();
+          const initialFen = chessInstance.fen();
+          const instanceId = Date.now();
+     
+          await updateGameState(instanceId, initialFen, null);
+          console.log("New game created");
+          return {initialFen, instanceId};
+     } catch (err) {
+          console.log(err);
+     }
+     
 }
 
-const makeMove = async (id, userMove, depth, instance) => {
-     const userMove = await handleUserMove(id, userMove, instance);
-     if (userMove.status === 'game_over') {
-          return userMove;
-     }
+const makeMove = async (id, move, depth) => {
+     try {
+          const gameState = await getGameState(id);
+          const instance = new chess.Chess(gameState.fen);
 
-     const computerMove = await handleComputerMove(id, depth, instance);
-     if (computerMove.status === 'game_over') {
+          const userMove = await handleUserMove(id, move, instance);
+          if (userMove.status === 'game_over') {
+               await redisClient.del(`${id}:fen`);
+               await redisClient.del(`${id}:moves`);
+               return userMove;
+          }
+     
+          const computerMove = await handleComputerMove(id, depth, instance);
+          if (computerMove.status === 'game_over') {
+               await redisClient.del(`${id}:fen`);
+               await redisClient.del(`${id}:moves`);
+               return computerMove;
+          }
+          console.log(computerMove);
           return computerMove;
-     }
 
-     return computerMove;
+     } catch (err) {
+          console.log(err);
+     }
 }
 
 module.exports = {
