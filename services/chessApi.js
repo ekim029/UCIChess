@@ -6,7 +6,7 @@ const getEngineMove = async (fen, depth) => {
         if (!response.ok) {
             throw new Error(`Error: ${response.status} ${response.statusText}`);
         }
-        console.log("connected");
+        
         return response.json();
     } catch (err) {
         console.log(err);
