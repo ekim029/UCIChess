@@ -10,7 +10,7 @@ const createNewGame = async () => {
      
           await updateGameState(instanceId, initialFen, null);
           console.log("New game created");
-          return {initialFen, instanceId};
+          return {initialFen, instanceId, chessInstance};
      } catch (err) {
           console.log(err);
      }
@@ -35,7 +35,6 @@ const makeMove = async (id, move, depth) => {
                await redisClient.del(`${id}:moves`);
                return computerMove;
           }
-          console.log(computerMove);
           return computerMove;
 
      } catch (err) {

@@ -8,7 +8,7 @@ app.use(express.json());
 app.post('/game/new', async (req, res) => {
     try {
         const newGame = await createNewGame();
-        res.json(newGame.instanceId);
+        res.status(200).json(newGame);
     } catch (err) {
         res.status(404).send(err);
     }
@@ -19,7 +19,7 @@ app.post('/game/:id', async (req, res) => {
     const { move, depth } = req.body;
 
     try {
-        const result = makeMove(id, move, depth);
+        const result = await makeMove(id, move, depth);
         res.status(200).json(result);
     } catch (err) {
         res.status(404).send(err);
@@ -27,6 +27,10 @@ app.post('/game/:id', async (req, res) => {
 })
 
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT || process.env.TEST_PORT, () => {
     console.log(`Connected to port ${process.env.PORT}`);
 })
+
+module.exports = {
+    app, server
+}
