@@ -1,16 +1,16 @@
 const {updateGameState} = require('../utils/gameState');
 const getEngineMove = require('../services/chessApi');
+const convert = require('../utils/convertUCISAN');
 
 const handleUserMove = async (id, userMove, instance) => {
     try {
-        // want to input in pgn form
-        // convert pgn to san for move method
-        const validMove = instance.move(userMove);
+        const convertMove = convert(userMove);
+        const validMove = instance.move(convertMove);
         if (!validMove) {
             throw new Error("Invalid move");
         }
         const newFen = instance.fen();
-        await updateGameState(id, newFen, userMove, false);
+        await updateGameState(id, newFen, convertMove, false);
 
         if (instance.isGameOver() || instance.isStalemate() || instance.isThreefoldRepetition()) {
             return { status: 'game_over', result: instance.result() };
