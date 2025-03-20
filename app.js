@@ -2,6 +2,8 @@ const express = require('express');
 require('dotenv').config();
 const {createNewGame, makeMove} = require('./controllers/gameController');
 const app = express();
+const connectDB = require('./db/db');
+connectDB();
 
 app.use(express.json());
 
