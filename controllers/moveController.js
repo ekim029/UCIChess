@@ -12,7 +12,7 @@ const handleUserMove = async (id, userMove, instance) => {
         const newFen = instance.fen();
         await updateGameState(id, newFen, convertMove, false);
 
-        if (instance.isGameOver() || instance.isStalemate() || instance.isThreefoldRepetition()) {
+        if (instance.isGameOver()) {
             return { status: 'game_over', result: instance.result() };
         }
         return { status: 'user_move_done', fen: newFen };
@@ -33,7 +33,7 @@ const handleComputerMove = async (id, depth, instance) => {
         const newFen = instance.fen();
         updateGameState(id, newFen, computerMove, true);
 
-        if (instance.isGameOver() || instance.isStalemate() || instance.isThreefoldRepetition()) {
+        if (instance.isGameOver()) {
             return { status: 'game_over', result: instance.result() };
         }
         return { status: 'computer_move_done', fen: newFen, move: computerMove };

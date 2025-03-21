@@ -1,5 +1,6 @@
 const {updateGameState, getGameState} = require('../utils/gameState');
 const {handleUserMove, handleComputerMove} = require('./moveController');
+const {handleGameOver} = require('../utils/gameOverHandler');
 const chess = require('chess.js');
 
 const createNewGame = async () => {
@@ -24,15 +25,13 @@ const makeMove = async (id, move, depth) => {
 
           const userMove = await handleUserMove(id, move, instance);
           if (userMove.status === 'game_over') {
-               await redisClient.del(`${id}:fen`);
-               await redisClient.del(`${id}:moves`);
+               await handleGameOver(id, instance);
                return userMove;
           }
      
           const computerMove = await handleComputerMove(id, depth, instance);
           if (computerMove.status === 'game_over') {
-               await redisClient.del(`${id}:fen`);
-               await redisClient.del(`${id}:moves`);
+               await handleGameOver(id, instance);
                return computerMove;
           }
           return computerMove;
