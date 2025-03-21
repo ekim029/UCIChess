@@ -24,9 +24,10 @@ app.post('/game/new', async (req, res) => {
 app.post('/game/:id', async (req, res) => {
     const { id } = req.params;
     const { move, depth } = req.body;
+    const userId = req.userId;
 
     try {
-        const result = await makeMove(id, move, depth);
+        const result = await makeMove(userId, id, move, depth);
         res.status(200).json(result);
     } catch (err) {
         res.status(404).send(err);

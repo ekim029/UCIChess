@@ -18,20 +18,20 @@ const createNewGame = async () => {
      
 }
 
-const makeMove = async (id, move, depth) => {
+const makeMove = async (userId, id, move, depth) => {
      try {
           const gameState = await getGameState(id);
           const instance = new chess.Chess(gameState.fen);
 
           const userMove = await handleUserMove(id, move, instance);
           if (userMove.status === 'game_over') {
-               await handleGameOver(id, instance);
+               await handleGameOver(userId, id, instance);
                return userMove;
           }
      
           const computerMove = await handleComputerMove(id, depth, instance);
           if (computerMove.status === 'game_over') {
-               await handleGameOver(id, instance);
+               await handleGameOver(userId, id, instance);
                return computerMove;
           }
           return computerMove;
