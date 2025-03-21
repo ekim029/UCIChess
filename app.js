@@ -1,11 +1,16 @@
 const express = require('express');
 require('dotenv').config();
 const {createNewGame, makeMove} = require('./controllers/gameController');
+const {registerUser, loginUser} = require('./controllers/userController');
 const app = express();
 const connectDB = require('./db/db');
 connectDB();
 
 app.use(express.json());
+
+app.post('/user/register',registerUser);
+
+app.post('/user/login',loginUser);
 
 app.post('/game/new', async (req, res) => {
     try {
